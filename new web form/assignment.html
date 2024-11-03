@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Handling Assignment</title>
+    <style>
+        #summary {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: none;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Information Form</h2>
+    <form id="userForm">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><span id="emailError" class="error"></span><br><br>
+
+        <label for="contactMethod">Preferred Contact Method:</label><br>
+        <select id="contactMethod" name="contactMethod" required>
+            <option value="">Select...</option>
+            <option value="Phone">Phone</option>
+            <option value="Email">Email</option>
+        </select><br><br>
+
+        <input type="checkbox" id="terms" name="terms" required>
+        <label for="terms">I accept the terms and conditions</label><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="summary">
+        <h3>Form Summary</h3>
+        <p><strong>Name:</strong> <span id="summaryName"></span></p>
+        <p><strong>Email:</strong> <span id="summaryEmail"></span></p>
+        <p><strong>Preferred Contact Method:</strong> <span id="summaryContact"></span></p>
+        <p id="confirmationMessage"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('userForm');
+        const summary = document.getElementById('summary');
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+        const confirmationMessage = document.getElementById('confirmationMessage');
+
+        // Real-time validation for email
+        emailInput.addEventListener('input', () => {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value)) {
+                emailError.textContent = " Invalid email format.";
+            } else {
+                emailError.textContent = "";
+            }
+        });
+
+        // Form submission event
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Validate form fields
+            if (!form.checkValidity()) {
+                alert('Please fill out all required fields.');
+                return;
+            }
+
+            if (!document.getElementById('terms').checked) {
+                alert('Please accept the terms and conditions.');
+                return;
+            }
+
+            // Capture form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: emailInput.value,
+                contactMethod: document.getElementById('contactMethod').value,
+            };
+
+            // Display form summary
+            document.getElementById('summaryName').textContent = formData.name;
+            document.getElementById('summaryEmail').textContent = formData.email;
+            document.getElementById('summaryContact').textContent = formData.contactMethod;
+            summary.style.display = 'block';
+
+            // Show confirmation message
+            confirmationMessage.textContent = 'Thank you! Your form has been submitted successfully.';
+        });
+
+        // Real-time data updates
+        form.addEventListener('input', function() {
+            if (form.checkValidity()) {
+                document.getElementById('summaryName').textContent = document.getElementById('name').value;
+                document.getElementById('summaryEmail').textContent = emailInput.value;
+                document.getElementById('summaryContact').textContent = document.getElementById('contactMethod').value;
+            }
+        });
+    </script>
+</body>
+</html>
